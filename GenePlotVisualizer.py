@@ -63,7 +63,7 @@ def makeMatrix(seqx, seqy, threshold):
 
     return zeros_matrix
 
-seqx = parseFastaFile("myt1LT8rawseq.txt", True)
+seqx = parseFastaFile("Data/myt1LT8rawseq.txt", True)
 seqy = callSeqFromNCBI("NM_001329849.3")
 
 dotplot = plt.imshow(np.array(makeMatrix(seqx, seqy, 20)))
