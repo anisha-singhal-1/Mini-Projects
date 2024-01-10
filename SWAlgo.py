@@ -24,7 +24,7 @@ def ScoringMatrix(seq1, seq2):
 
     for i in range(0, m):
         for j in range(0, n):
-            i_m = i + 1
+            i_m = i + 1   # to skip first row and column
             j_m = j + 1
             max_values = [0, 0, 0]
 
@@ -71,67 +71,52 @@ def traceback(matrix, seq1, seq2):
                 maxRow = i
                 maxCol = j
 
-    end = maxCol == 0 and maxRow == 0
-    move = next_move(matrix, maxRow, maxCol)
+    currRow = maxRow
+    currCol = maxCol
+    currSymb = "|"
+    move = "D"
 
-    while move != end:
-        #print(move)
-        if move == 1:                             # diagonal move
-            maxRow -= 1
-            maxCol -= 1
-            #print(maxRow, maxCol)
-            aligned_seq1.append(seq1[maxRow])
-            aligned_seq2.append(seq2[maxCol])
-            symbSeq.append("|")
-
-        if move == 2:                             # up move
-            maxRow -= 1
-           # print(maxRow, maxCol)
-            aligned_seq1.append(seq1[maxRow])
-            aligned_seq2.append("-")
-            symbSeq.append(" ")
-
-        if move == 3:                             # left move 
-            maxCol -= 1
-           # print(maxRow, maxCol)
-            aligned_seq1.append("-")
-            aligned_seq2.append(seq2[maxCol])
-            symbSeq.append(" ")
-
-        if move == 0:  
-            print(move)                          # mismatch and move to next highest number
-            aligned_seq1.append(seq1[maxRow])
-            aligned_seq2.append(seq2[maxCol])
-            symbSeq.append(":")
-            end = True
-
-        print(move, matrix[maxRow, maxCol])
-        move = next_move(matrix, maxRow, maxCol)
+    while currRow != 0 and currCol != 0:
         
+        if move == "D":
+            aligned_seq1.append(seq1[currRow - 1])
+            aligned_seq2.append(seq2[currCol - 1])
+            symbSeq.append(currSymb)
+        if move == "U":
+            aligned_seq1.append(seq1[currRow])
+            aligned_seq2.append("-")
+            symbSeq.append(currSymb)
+        if move == "L":
+            aligned_seq1.append("-")
+            aligned_seq2.append(seq2[currCol])
+            symbSeq.append(currSymb)
+        
+        diag = matrix[currRow - 1, currCol - 1]
+        up = matrix[currRow - 1, currCol]
+        left = matrix[currRow, currCol - 1]
+
+        if diag >= up and diag >= left:
+            move = "D"
+            currRow -= 1 
+            currCol -= 1
+            currSymb = "|"
+        elif up > diag and up >= left:
+            move = "U"
+            currRow -= 1
+            currSymb = " "
+        elif left > up and left > diag:
+            move = "L"
+            currCol -= 1
+            currSymb = " "
+
     aligned_seq1 = ''.join(aligned_seq1[::-1])
     symbSeq = ''.join(symbSeq[::-1])
     aligned_seq2 = ''.join(aligned_seq2[::-1])
     
     return f"{aligned_seq1}\n{symbSeq}\n{aligned_seq2}"
-
-# input = matrix of two string sequences with rows(i) and columns(j) parameters in integer form
-# output = one integer (if no errors)
-def next_move(matrix, i, j):
-    diag = matrix[i - 1, j - 1]
-    up = matrix[i - 1, j]
-    left = matrix[i, j - 1]
-
-    if diag >= up and diag >= left:
-        return 1 if diag != 0 else 0
-    elif up > diag and up >= left:
-        return 2 if up != 0 else 0
-    elif left > up and left > diag:
-        return 3 if left != 0 else 0
-    else:
-        return "error"
     
-seq1 = "ATGGTGA"
-seq2 = "ATTGGT"
+seq1 = "CCATGGTGA"
+seq2 = "GAACATTGGT"
 
 matrix = ScoringMatrix(seq1, seq2)
 print(matrix)
