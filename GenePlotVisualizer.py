@@ -35,7 +35,7 @@ def makeMatrix(seqx, seqy, threshold):
 
     rows = (len(seqx)//threshold + 1) #defining length of x-axis, rounds down the seq length
     cols = (len(seqy)//threshold + 1) #defining length of y-axis, rounds down the seq length
-    print(rows, cols)
+    #print(rows, cols)
     zeros_matrix = np.zeros((rows,cols))
 
     for i in range(rows):
